@@ -13,8 +13,10 @@
 ![Diagram de Chen](./docs/images/diagram-de-chen.svg)
 
 ### Crow's Foot Diagram
+![Crow's Foot Diagram](./docs/images/diagram-crows-foot.svg)
 
 ### Class Diagram
+
 
 ## Testing
 

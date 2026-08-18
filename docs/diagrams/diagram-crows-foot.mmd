@@ -1,0 +1,45 @@
+---
+config:
+  theme: neo-dark
+title: Crow's Foot Diagram
+---
+erDiagram
+	direction TB
+	movies {
+		int id PK ""  
+		string title  ""  
+		int release_year_id FK ""  
+	}
+
+	years {
+		int id PK ""  
+		int year  ""  
+	}
+
+	movies_genres {
+		int movie_id FK ""  
+		int genre_id FK ""  
+	}
+
+	genres {
+		int id PK ""  
+		string name  ""  
+	}
+
+	movies_actors {
+		int movie_id FK ""  
+		int actor_id FK ""  
+	}
+
+	actors {
+		int id  ""  
+		string first_name  ""  
+		string last_name  ""  
+		string date_of_birth  ""  
+	}
+
+	movies}|--||years:"  "
+	movies||--|{movies_genres:"  "
+	movies_genres}|--||genres:"  "
+	movies||--|{movies_actors:"  "
+	movies_actors}|--||actors:"  "
