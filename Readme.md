@@ -1,11 +1,14 @@
 # Java Spring Project - API Movies
 
+## Installation 
+
+## Endpoints
+
 ## Description
 
 ### Stack
 
-### Patterns
-
+### Used patterns
 
 ## Diagrams
 
@@ -16,7 +19,6 @@
 ![Crow's Foot Diagram](./docs/images/diagram-crows-foot.svg)
 
 ### Class Diagram
-
 
 ## Testing
 
