@@ -3,18 +3,19 @@ package dev.daniel.movies.mappers;
 import dev.daniel.movies.MovieEntity;
 import dev.daniel.movies.dtos.MovieDTORequest;
 import dev.daniel.movies.dtos.MovieDTOResponse;
+import dev.daniel.years.ReleaseYearEntity;
 
 public class MovieMapper {
     
-    public static MovieEntity toEntity(MovieDTORequest dto) {
+    public static MovieEntity toEntity(MovieDTORequest dto, ReleaseYearEntity year) {
         MovieEntity entity = new MovieEntity();
         entity.setTitle(dto.title());
-        entity.setRelease_year(dto.release_year());
+        entity.setReleaseYear(year);
         return entity;
     }
 
     public static MovieDTOResponse teDTO(MovieEntity entity) {
-        return new MovieDTOResponse(entity.getId(), entity.getTitle(), entity.getRelease_year());
+        return new MovieDTOResponse(entity.getId(), entity.getTitle(), entity.getReleaseYear().getId());
     }
 
 }

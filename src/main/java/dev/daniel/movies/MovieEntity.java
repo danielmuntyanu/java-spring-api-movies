@@ -1,9 +1,14 @@
 package dev.daniel.movies;
 
+import dev.daniel.years.ReleaseYearEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -12,16 +17,20 @@ public class MovieEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String title;
-    private int release_year;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "release_year", nullable = false)
+    private ReleaseYearEntity releaseYear;
 
     public MovieEntity() {
     }
 
-    public MovieEntity(Long id, String title, int release_year) {
+    public MovieEntity(Long id, String title, ReleaseYearEntity releaseYear) {
         this.id = id;
         this.title = title;
-        this.release_year = release_year;
+        this.releaseYear = releaseYear;
     }
 
     public Long getId() {
@@ -32,8 +41,8 @@ public class MovieEntity {
         return title;
     }
 
-    public int getRelease_year() {
-        return release_year;
+    public ReleaseYearEntity getReleaseYear() {
+        return releaseYear;
     }
     
 
@@ -41,10 +50,8 @@ public class MovieEntity {
         this.title = title;
     }
 
-    public void setRelease_year(int release_year) {
-        this.release_year = release_year;
+    public void setReleaseYear(ReleaseYearEntity releaseYear) {
+        this.releaseYear = releaseYear;
     }
-
-    
 
 }

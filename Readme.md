@@ -13,10 +13,10 @@
 ## Diagrams
 
 ### ER-Diagram de Chen (Entity Relationship)
-![Diagram de Chen](./docs/images/diagram-de-chen.svg)
+<img width=1080 src="./docs/images/diagram-de-chen.svg" alt="Diagram de Chen" />
 
 ### Crow's Foot Diagram
-![Crow's Foot Diagram](./docs/images/diagram-crows-foot.svg)
+<img width=1080 src="./docs/images/diagram-crows-foot.svg" alt="Crow's Foot Diagram" />
 
 ### Class Diagram
 

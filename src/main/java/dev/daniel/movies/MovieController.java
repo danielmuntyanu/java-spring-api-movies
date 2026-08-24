@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 
 
+
 @RestController
 @RequestMapping(path = "${api-endpoint}/movies")
 public class MovieController {
@@ -36,13 +37,13 @@ public class MovieController {
     }
 
     @GetMapping("")
-    public List<MovieDTOResponse> index() {
-        return getService.getEntities();
+    public ResponseEntity<List<MovieDTOResponse>> index() {
+        return ResponseEntity.ok(getService.getEntities());
     }
 
     @GetMapping("{id}")
-    public MovieDTOResponse getById(@PathVariable Long id) {
-        return getService.getById(id);
+    public ResponseEntity<MovieDTOResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(getService.getById(id));
     }
 
     @PostMapping("")
@@ -70,6 +71,12 @@ public class MovieController {
         editService.deleteEntity(id);
         return ResponseEntity.noContent().build();
     }
-    
+
+    // Additional
+
+    @GetMapping("year/{year}")
+    public ResponseEntity<List<MovieDTOResponse>> getAllByYear(@Valid @PathVariable int year) {
+        return ResponseEntity.ok(getService.getAllByYear(year));
+    }
 
 }
