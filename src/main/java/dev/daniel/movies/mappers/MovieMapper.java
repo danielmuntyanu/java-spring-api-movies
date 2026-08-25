@@ -14,7 +14,7 @@ public class MovieMapper {
         return entity;
     }
 
-    public static MovieDTOResponse teDTO(MovieEntity entity) {
+    public static MovieDTOResponse toDTO(MovieEntity entity) {
         return new MovieDTOResponse(entity.getId(), entity.getTitle(), entity.getReleaseYear().getId());
     }
 

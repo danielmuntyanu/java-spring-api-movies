@@ -6,6 +6,5 @@ public interface InterfaceGenericGetService<T> {
     
     public List<T> getEntities();
     public T getById(Long id);
-    public List<T> getAllByYear(int year);
 
 }

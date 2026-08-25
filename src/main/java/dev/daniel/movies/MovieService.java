@@ -34,7 +34,7 @@ public class MovieService implements InterfaceGenericGetService<MovieDTOResponse
         List<MovieDTOResponse> movies = new ArrayList<>();   
         
         movieRepository.findAll().forEach(m -> {
-            MovieDTOResponse movieDTO = MovieMapper.teDTO(m);
+            MovieDTOResponse movieDTO = MovieMapper.toDTO(m);
             movies.add(movieDTO);
         });
 
@@ -45,7 +45,7 @@ public class MovieService implements InterfaceGenericGetService<MovieDTOResponse
     public MovieDTOResponse getById(Long id) {
         MovieEntity entity = movieRepository.findById(id)
             .orElseThrow(() -> new MovieExceptionNotFound("Movie not found. Id " + id + " doesn't exist."));
-        return MovieMapper.teDTO(entity);
+        return MovieMapper.toDTO(entity);
     }
 
     @Override
@@ -62,10 +62,10 @@ public class MovieService implements InterfaceGenericGetService<MovieDTOResponse
         
         MovieEntity movieSaved = movieRepository.save(movieToSave);
 
-        return MovieMapper.teDTO(movieSaved);
+        return MovieMapper.toDTO(movieSaved);
     }
 
-    private ReleaseYearEntity resolveYear(int year) {
+    private ReleaseYearEntity resolveYear(Long year) {
         return yearsRepository.findById(year)
         .orElseGet(() -> 
             yearsRepository.save(new ReleaseYearEntity(year)));
@@ -80,37 +80,29 @@ public class MovieService implements InterfaceGenericGetService<MovieDTOResponse
 
         movie.setTitle(dto.title());
         movie.setReleaseYear(
-            new ReleaseYearEntity(dto.release_year())
+            resolveYear(dto.release_year())
         );
 
         MovieEntity updated = movieRepository.save(movie);
 
-        return MovieMapper.teDTO(updated);
+        return MovieMapper.toDTO(updated);
         
     }
 
     @Override
     @Transactional
     public void deleteEntity(Long id) {
-        boolean exists = movieRepository.existsById(id);
-        if (!exists) throw new MovieExceptionNotFound("Cannot delete because movie not found. Id " + id + " doesn't exist.");
+        MovieEntity movie = movieRepository.findById(id)
+            .orElseThrow(() -> new MovieExceptionNotFound("Cannot delete because movie not found. Id " + id + " doesn't exist."));
+
+        ReleaseYearEntity year = movie.getReleaseYear();
 
         movieRepository.deleteById(id);
+        movieRepository.flush();
+
+        if (year.getMovies().isEmpty()) {
+            yearsRepository.deleteById(year.getId());
+        }
     }
-
-
-    @Override
-    public List<MovieDTOResponse> getAllByYear(int year) {
-        List<MovieDTOResponse> movies = new ArrayList<>();
-
-        movieRepository.findByReleaseYear_Id(year).forEach(m -> {
-            MovieDTOResponse movieDTO = MovieMapper.teDTO(m);
-            movies.add(movieDTO);
-        });
-
-        return movies;
-    }
-
-    
     
 }

@@ -55,7 +55,6 @@ public class MovieController {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
-        // return ResponseEntity.status(201).body(dtoResponse);
         return ResponseEntity.created(URI.create("/movies/" + dtoResponse.id())).body(dtoResponse);
 
     }
@@ -72,11 +71,5 @@ public class MovieController {
         return ResponseEntity.noContent().build();
     }
 
-    // Additional
-
-    @GetMapping("year/{year}")
-    public ResponseEntity<List<MovieDTOResponse>> getAllByYear(@Valid @PathVariable int year) {
-        return ResponseEntity.ok(getService.getAllByYear(year));
-    }
 
 }

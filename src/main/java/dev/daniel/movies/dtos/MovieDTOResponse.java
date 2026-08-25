@@ -1,4 +1,4 @@
 package dev.daniel.movies.dtos;
 
-public record MovieDTOResponse(Long id, String title, int release_year) {
+public record MovieDTOResponse(Long id, String title, Long release_year) {
 } 

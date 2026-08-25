@@ -1,7 +1,7 @@
 package dev.daniel.movies;
 
 import dev.daniel.years.ReleaseYearEntity;
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -18,6 +18,7 @@ public class MovieEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "title", nullable = false, length = 50)
     private String title;
     
     @ManyToOne(fetch = FetchType.LAZY)
