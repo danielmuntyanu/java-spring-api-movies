@@ -42,4 +42,10 @@ public class YearsService implements InterfaceGenericGetService<ReleaseYearDTORe
         return ReleaseYearMapper.toDTO(entity);
 
     }
+
+    @Override
+    public List<ReleaseYearDTOResponse> getByName(String name) {
+        //! There is no name columns in 'years' table, but we have to implement this method. 
+        return null;
+    }
 }

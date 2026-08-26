@@ -20,8 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
-
-
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -70,6 +69,12 @@ public class MovieController {
         editService.deleteEntity(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("search")
+    public ResponseEntity<List<MovieDTOResponse>> searchByTitle(@RequestParam(name = "title") String requestString) {
+        return ResponseEntity.ok(getService.getByName(requestString));
+    }
+    
 
 
 }

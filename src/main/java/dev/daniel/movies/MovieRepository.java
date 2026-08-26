@@ -5,5 +5,7 @@ import java.util.List;
 
 
 public interface MovieRepository extends JpaRepository<MovieEntity, Long> {
-    public List<MovieEntity> findByReleaseYear_Id(int id);
+    
+    public List<MovieEntity> findByTitleContaining(String requestString);
+
 }

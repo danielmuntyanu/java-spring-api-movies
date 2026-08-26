@@ -1,10 +1,16 @@
 package dev.daniel.genres;
 
+import java.util.List;
+
+import dev.daniel.movies.MovieEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -14,18 +20,28 @@ public class GenreEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Long id;
 
     @Column(name = "name", nullable = false, length = 20)
     private String name;
 
-    public GenreEntity() {}
+    @ManyToMany
+    @JoinTable(
+        name = "movies_genres",
+        joinColumns = @JoinColumn(name = "genre_id"),
+        inverseJoinColumns = @JoinColumn(name = "movie_id")
+    )
+    private List<MovieEntity> movies;
+
+    
+    public GenreEntity() {
+    }
 
     public GenreEntity(String name) {
         this.name = name;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
@@ -37,7 +53,16 @@ public class GenreEntity {
         this.name = name;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    
+    public List<MovieEntity> getMovies() {
+        return movies;
+    }
+
+    public void setMovies(List<MovieEntity> movies) {
+        this.movies = movies;
+    }
 
 }

@@ -1,4 +1,12 @@
 package dev.daniel.movies.dtos;
 
-public record MovieDTOResponse(Long id, String title, Long release_year) {
+import java.util.List;
+
+public record MovieDTOResponse(
+    Long id, 
+    String title, 
+    Long release_year,
+    List<String> genres,
+    List<String> actors
+) {
 } 

@@ -1,11 +1,16 @@
 package dev.daniel.movies;
 
+import dev.daniel.genres.GenresRepository;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
+import dev.daniel.actors.ActorEntity;
+import dev.daniel.actors.ActorsRepository;
+import dev.daniel.genres.GenreEntity;
 import dev.daniel.implementations.InterfaceGenericEditService;
 import dev.daniel.implementations.InterfaceGenericGetService;
 import dev.daniel.movies.dtos.MovieDTORequest;
@@ -21,12 +26,16 @@ import jakarta.transaction.Transactional;
 @Service
 public class MovieService implements InterfaceGenericGetService<MovieDTOResponse>, InterfaceGenericEditService<MovieDTORequest, MovieDTOResponse> {
 
+    private final GenresRepository genresRepository;
     private final MovieRepository movieRepository;
     private final YearsRepository yearsRepository;
+    private final ActorsRepository actorsRepository;
 
-    public MovieService(MovieRepository movieRepository, YearsRepository yearsRepository) {
+    public MovieService(MovieRepository movieRepository, YearsRepository yearsRepository, GenresRepository genresRepository, ActorsRepository actorsRepository) {
         this.movieRepository = movieRepository;
         this.yearsRepository = yearsRepository;
+        this.genresRepository = genresRepository;
+        this.actorsRepository = actorsRepository;
     }
 
     @Override
@@ -53,7 +62,10 @@ public class MovieService implements InterfaceGenericGetService<MovieDTOResponse
     public MovieDTOResponse storeEntity(MovieDTORequest dto) {
         
         ReleaseYearEntity year = resolveYear(dto.release_year());
-        MovieEntity movieToSave = MovieMapper.toEntity(dto, year);
+        List<GenreEntity> genres = resolveGenres(dto.genres());
+        List<ActorEntity> actors = resolveActors(dto.actors());
+
+        MovieEntity movieToSave = MovieMapper.toEntity(dto, year, genres, actors);
 
         // check if it already exists
         Example<MovieEntity> example = Example.of(movieToSave);
@@ -71,6 +83,35 @@ public class MovieService implements InterfaceGenericGetService<MovieDTOResponse
             yearsRepository.save(new ReleaseYearEntity(year)));
     }
 
+    private List<GenreEntity> resolveGenres(List<String> genreNames) {
+        List<GenreEntity> genres = new ArrayList<>();
+        
+        genreNames.forEach(g -> {
+            GenreEntity genre = genresRepository.findByName(g)
+                .orElseGet(() -> genresRepository.save(new GenreEntity(g))); 
+            genres.add(genre);
+        });
+
+        return genres;
+    }
+
+    private List<ActorEntity> resolveActors(List<String> actorFullNames) {
+        List<ActorEntity> actors = new ArrayList<>();
+
+        actorFullNames.forEach(a -> {
+            String[] names = a.split("");
+            String firstName = names[0];
+            String[] sliced = Arrays.copyOfRange(names, 1, names.length);
+            String lastName = String.join(" ", sliced);
+            
+            ActorEntity actor = actorsRepository.getByFirstNameEqualsAndLastNameEquals(firstName, lastName)
+                .orElseGet(() -> new ActorEntity(firstName, lastName));
+            actors.add(actor);
+        });
+
+        return actors;
+    }
+
     @Override
     @Transactional
     public MovieDTOResponse updateEntity(Long id, MovieDTORequest dto) {
@@ -78,12 +119,26 @@ public class MovieService implements InterfaceGenericGetService<MovieDTOResponse
         MovieEntity movie = movieRepository.findById(id)
             .orElseThrow(() -> new MovieExceptionNotFound("Cannot update because movie not found. Id " + id + " doesn't exist."));
 
+        ReleaseYearEntity yearBefore = movie.getReleaseYear();
+
         movie.setTitle(dto.title());
         movie.setReleaseYear(
             resolveYear(dto.release_year())
         );
+        movie.setGenres(
+            resolveGenres(dto.genres())
+        );
 
-        MovieEntity updated = movieRepository.save(movie);
+        MovieEntity updated = movieRepository.saveAndFlush(movie);
+
+        ReleaseYearEntity yearAfter = movie.getReleaseYear();
+        if (yearBefore != yearAfter && (
+                yearBefore.getMovies() == null || 
+                yearBefore.getMovies().isEmpty()
+            ) ) {
+            
+            yearsRepository.delete(yearBefore);
+        }
 
         return MovieMapper.toDTO(updated);
         
@@ -103,6 +158,17 @@ public class MovieService implements InterfaceGenericGetService<MovieDTOResponse
         if (year.getMovies().isEmpty()) {
             yearsRepository.deleteById(year.getId());
         }
+
+    }
+
+    @Override
+    public List<MovieDTOResponse> getByName(String requestString) {
+        
+        List<MovieEntity> entities = movieRepository.findByTitleContaining(requestString);
+
+        List<MovieDTOResponse> movieDTOs = entities.stream().map((e) -> MovieMapper.toDTO(e)).toList(); 
+
+        return movieDTOs;
     }
     
 }
