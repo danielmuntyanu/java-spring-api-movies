@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import dev.daniel.actors.ActorEntity;
 import dev.daniel.actors.ActorsRepository;
+import dev.daniel.actors.dtos.Fullname;
+import dev.daniel.actors.mappers.ActorMapper;
 import dev.daniel.genres.GenreEntity;
 import dev.daniel.implementations.InterfaceGenericEditService;
 import dev.daniel.implementations.InterfaceGenericGetService;
@@ -99,13 +101,10 @@ public class MovieService implements InterfaceGenericGetService<MovieDTOResponse
         List<ActorEntity> actors = new ArrayList<>();
 
         actorFullNames.forEach(a -> {
-            String[] names = a.split("");
-            String firstName = names[0];
-            String[] sliced = Arrays.copyOfRange(names, 1, names.length);
-            String lastName = String.join(" ", sliced);
-            
-            ActorEntity actor = actorsRepository.getByFirstNameEqualsAndLastNameEquals(firstName, lastName)
-                .orElseGet(() -> new ActorEntity(firstName, lastName));
+            Fullname name = ActorMapper.toFullnameVO(a);
+
+            ActorEntity actor = actorsRepository.getByFirstNameEqualsAndLastNameEquals(name.firstName(), name.lastName())
+                .orElseGet(() -> new ActorEntity(name.firstName(), name.lastName()));
             actors.add(actor);
         });
 
@@ -127,6 +126,9 @@ public class MovieService implements InterfaceGenericGetService<MovieDTOResponse
         );
         movie.setGenres(
             resolveGenres(dto.genres())
+        );
+        movie.setActors(
+            resolveActors(dto.actors())
         );
 
         MovieEntity updated = movieRepository.saveAndFlush(movie);
