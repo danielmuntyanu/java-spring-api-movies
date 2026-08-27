@@ -104,7 +104,7 @@ public class MovieService implements InterfaceGenericGetService<MovieDTOResponse
             Fullname name = ActorMapper.toFullnameVO(a);
 
             ActorEntity actor = actorsRepository.getByFirstNameEqualsAndLastNameEquals(name.firstName(), name.lastName())
-                .orElseGet(() -> new ActorEntity(name.firstName(), name.lastName()));
+                .orElseGet(() -> actorsRepository.save(new ActorEntity(name.firstName(), name.lastName())));
             actors.add(actor);
         });
 
@@ -171,6 +171,7 @@ public class MovieService implements InterfaceGenericGetService<MovieDTOResponse
         List<MovieDTOResponse> movieDTOs = entities.stream().map((e) -> MovieMapper.toDTO(e)).toList(); 
 
         return movieDTOs;
+        
     }
     
 }
