@@ -38,7 +38,7 @@ public class MovieMapper {
         if (entity.getActors() != null) {
             entity.getActors().forEach(a -> {
                 String fullname = a.getFirstName() + " " + a.getLastName();
-                genres.add(fullname);
+                actors.add(fullname);
             });
         }
 
