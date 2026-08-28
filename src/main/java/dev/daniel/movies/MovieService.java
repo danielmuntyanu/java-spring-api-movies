@@ -2,7 +2,6 @@ package dev.daniel.movies;
 
 import dev.daniel.genres.GenresRepository;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.data.domain.Example;
@@ -64,8 +63,9 @@ public class MovieService implements InterfaceGenericGetService<MovieDTOResponse
     public MovieDTOResponse storeEntity(MovieDTORequest dto) {
         
         ReleaseYearEntity year = resolveYear(dto.release_year());
-        List<GenreEntity> genres = resolveGenres(dto.genres());
-        List<ActorEntity> actors = resolveActors(dto.actors());
+
+        List<GenreEntity> genres = dto.genres()!=null ? resolveGenres(dto.genres()) : null;
+        List<ActorEntity> actors = dto.actors()!=null ? resolveActors(dto.actors()) : null;
 
         MovieEntity movieToSave = MovieMapper.toEntity(dto, year, genres, actors);
 
@@ -171,7 +171,7 @@ public class MovieService implements InterfaceGenericGetService<MovieDTOResponse
         List<MovieDTOResponse> movieDTOs = entities.stream().map((e) -> MovieMapper.toDTO(e)).toList(); 
 
         return movieDTOs;
-        
+
     }
     
 }

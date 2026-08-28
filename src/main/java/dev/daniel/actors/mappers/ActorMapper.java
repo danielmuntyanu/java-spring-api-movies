@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.assertj.core.groups.Tuple;
-
 import dev.daniel.actors.ActorEntity;
 import dev.daniel.actors.dtos.ActorDTOResponse;
 import dev.daniel.actors.dtos.Fullname;

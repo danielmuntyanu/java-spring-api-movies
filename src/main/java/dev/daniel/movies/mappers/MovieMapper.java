@@ -1,7 +1,5 @@
 package dev.daniel.movies.mappers;
 
-import static org.junit.jupiter.api.DynamicTest.stream;
-
 import java.util.ArrayList;
 import java.util.List;
 
